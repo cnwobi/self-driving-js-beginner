@@ -27,7 +27,7 @@ class Car {
         ctx.restore();
     }
 
-    update() {
+    _move() {
         if (this._controls.forward) {
             this._speed += this._acceleration
         }
@@ -52,18 +52,22 @@ class Car {
             this._speed = 0
         }
 
+        if (this._speed !== 0) {
+            const flip = this._speed > 0 ? 1 : -1
+            if (this._controls.left) {
+                this._angle += 0.03 * flip
+            }
 
-        if (this._controls.left) {
-            this._angle += 0.03
-        }
-
-        if (this._controls.right) {
-            this._angle -= 0.03;
+            if (this._controls.right) {
+                this._angle -= 0.03 * flip;
+            }
         }
         this._x -= Math.sin(this._angle) * this._speed
 
         this._y -= Math.cos(this._angle) * this._speed
-        // this._y = Math.min(windowHeight - 30, this._y)
-        // this._y = Math.max(30, this._y)
+    }
+    update() {
+        this._move()
+
     }
 }

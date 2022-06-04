@@ -20,13 +20,14 @@ class Controls {
                     this.right = true
                     break
                 case "ArrowUp":
-                    this.reverse = true
+                    this.forward = true
                     break;
                 case "ArrowDown":
-                    this.forward = true
+                    this.reverse = true
                     break
             }
         }
+
         document.onkeyup = (event) => {
             switch (event.key) {
                 case "ArrowLeft":
@@ -40,9 +41,9 @@ class Controls {
                     break;
                 case "ArrowDown":
                     this.reverse = false
-
                     break
             }
+
         }
     }
 }
