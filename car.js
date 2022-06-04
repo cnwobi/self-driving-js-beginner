@@ -1,7 +1,7 @@
 class Car {
     constructor(x, y, width, height) {
         this._x = x
-        this._y = y;
+        this.y = y;
         this._width = width;
         this._height = height;
         this._controls = new Controls()
@@ -14,7 +14,7 @@ class Car {
 
     draw(ctx) {
         ctx.save()
-        ctx.translate(this._x, this._y)
+        ctx.translate(this._x, this.y)
         ctx.rotate(-this._angle)
 
         ctx.beginPath();
@@ -64,7 +64,7 @@ class Car {
         }
         this._x -= Math.sin(this._angle) * this._speed
 
-        this._y -= Math.cos(this._angle) * this._speed
+        this.y -= Math.cos(this._angle) * this._speed
     }
     update() {
         this._move()
