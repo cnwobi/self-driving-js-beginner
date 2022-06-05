@@ -12,6 +12,8 @@ class Car {
         this.damaged = false
         this.polygon = this._createPolygon()
 
+        this.useBrain = controlType === "AI"
+
 
         if (controlType !== "DUMMY") {
             this._sensor = new Sensor(this)
@@ -91,7 +93,12 @@ class Car {
             this._sensor?.update(roadBoarders, traffic)
             const offsets = this._sensor?.readings.map(r => r == null ? 0 : 1 - r.offset)
             const outputs = NeuralNetwork.feedForward(offsets,this.brain)
-            console.log(outputs)
+            if(this.useBrain) {
+                this._controls.forward = outputs[0]
+                this._controls.left = outputs[1]
+                this._controls.right = outputs[2]
+                this._controls.reverse = outputs[3]
+            }
         }
     }
 
