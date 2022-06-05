@@ -1,7 +1,7 @@
 class Sensor {
     constructor(car) {
         this._car = car
-        this._rayCount = 20
+        this.rayCount = 20
         this._rayLength = 150
         this._raySpread = Math.PI / 2
 
@@ -11,12 +11,12 @@ class Sensor {
 
     _castRays() {
         this._rays = []
-        this._rays = [...Array(this._rayCount).keys()].map(i => this.getStartAndEnd(i))
+        this._rays = [...Array(this.rayCount).keys()].map(i => this.getStartAndEnd(i))
     }
 
 
     getStartAndEnd(i) {
-        const factor = () => this._rayCount === 1 ? 0.5 : i / (this._rayCount - 1)
+        const factor = () => this.rayCount === 1 ? 0.5 : i / (this.rayCount - 1)
         const rayAngle = linearInterpolation(this._raySpread / 2,
             -this._raySpread / 2,
             factor()) + this._car.angle;
