@@ -8,7 +8,7 @@ class Car {
         this._acceleration = 0.3
         this._friction = 0.05;
         this._maxSpeed = 2.5
-        this._angle = 0
+        this.angle = 0
 
         this._sensor = new Sensor(this)
         this._controls = new Controls()
@@ -17,7 +17,7 @@ class Car {
     draw(ctx) {
         ctx.save()
         ctx.translate(this.x, this.y)
-        ctx.rotate(-this._angle)
+        ctx.rotate(-this.angle)
 
         ctx.beginPath();
         ctx.rect(-this._width / 2,
@@ -28,6 +28,7 @@ class Car {
         ctx.fill();
         ctx.restore();
         this._sensor.draw(ctx)
+
     }
 
     _move() {
@@ -58,20 +59,21 @@ class Car {
         if (this._speed !== 0) {
             const flip = this._speed > 0 ? 1 : -1
             if (this._controls.left) {
-                this._angle += 0.03 * flip
+                this.angle += 0.03 * flip
             }
 
             if (this._controls.right) {
-                this._angle -= 0.03 * flip;
+                this.angle -= 0.03 * flip;
             }
         }
-        this.x -= Math.sin(this._angle) * this._speed
+        this.x -= Math.sin(this.angle) * this._speed
 
-        this.y -= Math.cos(this._angle) * this._speed
+        this.y -= Math.cos(this.angle) * this._speed
     }
-    update() {
+
+    update(roadBoarders) {
         this._move()
-        this._sensor.update()
+        this._sensor.update(roadBoarders)
 
     }
 }
