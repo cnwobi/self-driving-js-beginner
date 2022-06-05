@@ -24,7 +24,7 @@ class Car {
     }
 
 
-    draw(ctx,color) {
+    draw(ctx,color,drawSensor= false) {
         ctx.fillStyle = this.damaged ? "gray" : color
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y)
@@ -32,7 +32,10 @@ class Car {
             .slice(1)
             .forEach(point => ctx.lineTo(point.x, point.y));
         ctx.fill();
-        this._sensor?.draw(ctx)
+
+        if (drawSensor) {
+            this._sensor?.draw(ctx)
+        }
 
     }
 
