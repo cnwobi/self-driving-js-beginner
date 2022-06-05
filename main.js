@@ -25,21 +25,26 @@ function generateCars(N) {
     return [...Array(N).keys()].map(_ => new Car(road.laneCenter(1),100,30,50,"AI"))
 }
 
+function bestCar(cars) {
+    const minY = Math.min(...cars.map(c => c.y))
+    return cars.find (c => c.y === minY)
+}
+
 function animate(time) {
 
     traffic.forEach( c => c.update(road.borders,[]))
     cars.forEach(car => car.update(road.borders,traffic))
-
+    const focusCar = bestCar(cars)
     carCanvas.height = window.innerHeight;
     networkCanvas.height = window.innerHeight
     carCtx.save()
-    carCtx.translate(0,-cars[0].y + carCanvas.height * 0.8)
+    carCtx.translate(0,-focusCar.y + carCanvas.height * 0.8)
     road.draw(carCtx);
     traffic.forEach(c => c.draw(carCtx,"green"))
     carCtx.globalAlpha = 0.2
     cars.forEach(car => car.draw(carCtx,"blue"))
     carCtx.globalAlpha = 1
-    cars[0].draw(carCtx,"blue",true)
+    focusCar.draw(carCtx,"blue",true)
     carCtx.restore()
 
     networkCtx.lineDashOffset = -time/50
