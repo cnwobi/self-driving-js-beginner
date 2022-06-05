@@ -1,5 +1,5 @@
 class Car {
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height, controlType, maxSpeed = 2.5) {
         this.x = x
         this.y = y;
         this._width = width;
@@ -7,13 +7,13 @@ class Car {
         this._speed = 0
         this._acceleration = 0.3
         this._friction = 0.05;
-        this._maxSpeed = 2.5
+        this._maxSpeed = maxSpeed
         this.angle = 0
         this.damaged = false
         this.polygon = this._createPolygon()
 
-        this._sensor = new Sensor(this)
-        this._controls = new Controls()
+        this._sensor = controlType === "KEYS" ? new Sensor(this) : null
+        this._controls = new Controls(controlType)
 
     }
 
@@ -26,12 +26,14 @@ class Car {
             .slice(1)
             .forEach(point => ctx.lineTo(point.x, point.y));
         ctx.fill();
-        this._sensor.draw(ctx)
+        this._sensor?.draw(ctx)
 
     }
 
-    _accessDamage(roadBorders) {
+    _accessDamage(roadBorders, traffic) {
+
         return roadBorders.some(border => polysIntersect(this.polygon, border))
+            || traffic.some(car => polysIntersect(this.polygon, car.polygon))
     }
 
     _move() {
@@ -74,13 +76,13 @@ class Car {
         this.y -= Math.cos(this.angle) * this._speed
     }
 
-    update(roadBoarders) {
+    update(roadBoarders, traffic) {
         if (!this.damaged) {
             this._move()
             this.polygon = this._createPolygon()
-            this.damaged = this._accessDamage(roadBoarders)
+            this.damaged = this._accessDamage(roadBoarders, traffic.filter(car => car !== this))
         }
-        this._sensor.update(roadBoarders)
+        this._sensor?.update(roadBoarders, traffic)
     }
 
     _createPolygon() {
