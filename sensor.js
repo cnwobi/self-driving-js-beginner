@@ -3,7 +3,7 @@ class Sensor {
         this._car = car
         this.rayCount = 5
         this._rayLength = 150
-        this._raySpread = Math.PI / 2
+        this._raySpread = Math.PI  / 2
 
         this._rays = []
         this.readings = []

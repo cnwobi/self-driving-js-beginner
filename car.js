@@ -1,5 +1,5 @@
 class Car {
-    constructor(x, y, width, height, controlType, maxSpeed = 2.5) {
+    constructor(x, y, width, height, controlType, maxSpeed = 2.5, color = "red") {
         this.x = x
         this.y = y;
         this._width = width;
@@ -17,28 +17,54 @@ class Car {
 
         if (controlType !== "DUMMY") {
             this._sensor = new Sensor(this)
-            this.brain = new NeuralNetwork([this._sensor.rayCount,6,4]);
+            this.brain = new NeuralNetwork([this._sensor.rayCount, 6, 4]);
         }
         this._controls = new Controls(controlType)
 
-    }
+        this.img = new Image();
+        this.img.src = "car.png"
 
+        this.mask = document.createElement("canvas");
+        this.mask.width = width;
+        this.mask.height = height;
 
-    draw(ctx,color,drawSensor= false) {
-        ctx.fillStyle = this.damaged ? "gray" : color
-        ctx.beginPath();
-        ctx.moveTo(this.polygon[0].x, this.polygon[0].y)
-        this.polygon
-            .slice(1)
-            .forEach(point => ctx.lineTo(point.x, point.y));
-        ctx.fill();
+        const maskCtx = this.mask.getContext("2d");
+        this.img.onload = () => {
+            maskCtx.fillStyle = color;
+            maskCtx.rect(0, 0, this._width, this._height);
+            maskCtx.fill();
 
-        if (drawSensor) {
-            this._sensor?.draw(ctx)
+            maskCtx.globalCompositeOperation = "destination-atop";
+            maskCtx.drawImage(this.img, 0, 0, this._width, this._height);
         }
 
     }
 
+
+    draw(ctx, drawSensor = false) {
+        if (this._sensor && drawSensor) {
+            this._sensor.draw(ctx);
+        }
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(-this.angle);
+        if (!this.damaged) {
+            ctx.drawImage(this.mask,
+                -this._width / 2,
+                -this._height / 2,
+                this._width,
+                this._height);
+            ctx.globalCompositeOperation = "multiply";
+        }
+        ctx.drawImage(this.img,
+            -this._width / 2,
+            -this._height / 2,
+            this._width,
+            this._height);
+        ctx.restore();
+
+    }
 
     _accessDamage(roadBorders, traffic) {
 
@@ -90,13 +116,13 @@ class Car {
         if (!this.damaged) {
             this._move()
             this.polygon = this._createPolygon()
-            this.damaged = this._accessDamage(roadBoarders, traffic.filter(car => car !== this))
+            this.damaged = this._accessDamage(roadBoarders, traffic)
         }
-        if(this._sensor) {
+        if (this._sensor) {
             this._sensor?.update(roadBoarders, traffic)
             const offsets = this._sensor?.readings.map(r => r == null ? 0 : 1 - r.offset)
-            const outputs = NeuralNetwork.feedForward(offsets,this.brain)
-            if(this.useBrain) {
+            const outputs = NeuralNetwork.feedForward(offsets, this.brain)
+            if (this.useBrain) {
                 this._controls.forward = outputs[0]
                 this._controls.left = outputs[1]
                 this._controls.right = outputs[2]

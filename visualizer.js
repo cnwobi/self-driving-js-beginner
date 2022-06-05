@@ -1,5 +1,5 @@
 class Visualizer {
-    static drawNetwork(ctx, network) {
+    static drawNetwork(ctx, network,cars) {
         const margin = 50;
         const left = margin;
         const top = margin;
@@ -7,6 +7,7 @@ class Visualizer {
         const height = ctx.canvas.height - margin * 2;
 
         const levelHeight = height / network.levels.length;
+
 
         for (let i = network.levels.length - 1; i >= 0; i--) {
             const levelTop = top +
@@ -98,6 +99,10 @@ class Visualizer {
                 ctx.strokeText(outputLabels[i], x, top + nodeRadius * 0.1);
             }
         }
+        ctx.font = "20px Georgia";
+        ctx.fillStyle = "yellow";
+        ctx.lineWidth = 1.5;
+        ctx.strokeText(`Enabled Cars: ${cars.filter(c => !c.damaged).length} `, 100, 20);
     }
 
     static #getNodeX(nodes, index, left, right) {
