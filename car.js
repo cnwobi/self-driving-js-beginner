@@ -9,27 +9,24 @@ class Car {
         this._friction = 0.05;
         this._maxSpeed = 2.5
         this.angle = 0
+        this.polygon = this._createPolygon()
 
         this._sensor = new Sensor(this)
         this._controls = new Controls()
     }
 
+
     draw(ctx) {
-        ctx.save()
-        ctx.translate(this.x, this.y)
-        ctx.rotate(-this.angle)
-
         ctx.beginPath();
-        ctx.rect(-this._width / 2,
-            -this._height / 2,
-            this._width,
-            this._height);
-
+        ctx.moveTo(this.polygon[0].x, this.polygon[0].y)
+        this.polygon
+            .slice(1)
+            .forEach(point => ctx.lineTo(point.x, point.y));
         ctx.fill();
-        ctx.restore();
         this._sensor.draw(ctx)
 
     }
+
 
     _move() {
         if (this._controls.forward) {
@@ -73,7 +70,33 @@ class Car {
 
     update(roadBoarders) {
         this._move()
+        this.polygon = this._createPolygon()
         this._sensor.update(roadBoarders)
+
+    }
+
+    _createPolygon() {
+        const rad = Math.hypot(this._width, this._height) / 2;
+        const alpha = Math.atan2(this._width, this._height)
+
+        const point1 = {
+            x: this.x - Math.sin(this.angle - alpha) * rad,
+            y: this.y - Math.cos(this.angle - alpha) * rad
+        }
+        const point2 = {
+            x: this.x - Math.sin(this.angle + alpha) * rad,
+            y: this.y - Math.cos(this.angle + alpha) * rad
+        }
+        const point3 = {
+            x: this.x - Math.sin(Math.PI + this.angle - alpha) * rad,
+            y: this.y - Math.cos(Math.PI + this.angle - alpha) * rad
+        }
+
+        const point4 = {
+            x: this.x - Math.sin(Math.PI + this.angle + alpha) * rad,
+            y: this.y - Math.cos(Math.PI + this.angle + alpha) * rad
+        }
+        return [point1, point2, point3, point4]
 
     }
 }
