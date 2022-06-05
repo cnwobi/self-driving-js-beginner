@@ -1,6 +1,3 @@
-function linearInterpolation(_left, _right, number) {
-    return _left + (_right - _left) * number
-}
 
 class Road {
     constructor(x, width, lanes = 3) {

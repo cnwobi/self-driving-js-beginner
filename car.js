@@ -1,20 +1,22 @@
 class Car {
     constructor(x, y, width, height) {
-        this._x = x
+        this.x = x
         this.y = y;
         this._width = width;
         this._height = height;
-        this._controls = new Controls()
         this._speed = 0
         this._acceleration = 0.3
         this._friction = 0.05;
         this._maxSpeed = 2.5
         this._angle = 0
+
+        this._sensor = new Sensor(this)
+        this._controls = new Controls()
     }
 
     draw(ctx) {
         ctx.save()
-        ctx.translate(this._x, this.y)
+        ctx.translate(this.x, this.y)
         ctx.rotate(-this._angle)
 
         ctx.beginPath();
@@ -25,6 +27,7 @@ class Car {
 
         ctx.fill();
         ctx.restore();
+        this._sensor.draw(ctx)
     }
 
     _move() {
@@ -62,12 +65,13 @@ class Car {
                 this._angle -= 0.03 * flip;
             }
         }
-        this._x -= Math.sin(this._angle) * this._speed
+        this.x -= Math.sin(this._angle) * this._speed
 
         this.y -= Math.cos(this._angle) * this._speed
     }
     update() {
         this._move()
+        this._sensor.update()
 
     }
 }
