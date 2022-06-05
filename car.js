@@ -9,14 +9,17 @@ class Car {
         this._friction = 0.05;
         this._maxSpeed = 2.5
         this.angle = 0
+        this.damaged = false
         this.polygon = this._createPolygon()
 
         this._sensor = new Sensor(this)
         this._controls = new Controls()
+
     }
 
 
     draw(ctx) {
+        ctx.fillStyle = this.damaged ? "gray" : "black"
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y)
         this.polygon
@@ -27,6 +30,9 @@ class Car {
 
     }
 
+    _accessDamage(roadBorders) {
+        return roadBorders.some(border => polysIntersect(this.polygon, border))
+    }
 
     _move() {
         if (this._controls.forward) {
@@ -69,10 +75,12 @@ class Car {
     }
 
     update(roadBoarders) {
-        this._move()
-        this.polygon = this._createPolygon()
+        if (!this.damaged) {
+            this._move()
+            this.polygon = this._createPolygon()
+            this.damaged = this._accessDamage(roadBoarders)
+        }
         this._sensor.update(roadBoarders)
-
     }
 
     _createPolygon() {
