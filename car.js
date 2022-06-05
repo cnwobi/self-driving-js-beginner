@@ -18,8 +18,8 @@ class Car {
     }
 
 
-    draw(ctx) {
-        ctx.fillStyle = this.damaged ? "gray" : "black"
+    draw(ctx,color) {
+        ctx.fillStyle = this.damaged ? "gray" : color
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y)
         this.polygon
@@ -29,6 +29,7 @@ class Car {
         this._sensor?.draw(ctx)
 
     }
+
 
     _accessDamage(roadBorders, traffic) {
 

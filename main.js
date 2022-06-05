@@ -1,5 +1,4 @@
 const canvas = document.getElementById("myCanvas")
-// canvas.height = window.innerHeight;
 canvas.width = 200;
 
 const ctx = canvas.getContext("2d");
@@ -25,9 +24,11 @@ function animate() {
     ctx.save()
     ctx.translate(0,-car.y + canvas.height * 0.8)
     road.draw(ctx);
-    car.draw(ctx);
-    traffic.forEach(c => c.draw(ctx))
+    traffic.forEach(c => c.draw(ctx,"green"))
+    car.draw(ctx,"blue");
+
     ctx.restore()
     requestAnimationFrame(animate)
+
 }
 
